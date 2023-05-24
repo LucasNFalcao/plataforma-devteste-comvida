@@ -1,4 +1,4 @@
-#main_container{
+#main_container {
   padding: 20px;
 }
 
@@ -42,20 +42,21 @@
   z-index: 10;
 }
 
-.modal {
+.modalTableInfo {
   position: fixed;
   z-index: 20;
   background: #fff;
-  width: 550px;
+  width: fit-content;
   height: fit-content;
   top: 50%;
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
   border: 10px solid #6a1b9a;
   border-radius: 70px;
+  padding: 30px;
 }
 
-.modal .modal__main {
+.modal__main {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -63,13 +64,13 @@
   padding: 35px;
 }
 
-.modal .labels{
+.modal .labels {
   display: flex;
   align-items: center;
   justify-content: flex-start;
 }
 
-.modal .observation{
+.modal .observation {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -81,7 +82,7 @@
   font-weight: 600;
 }
 
-.modal .collection-buttons{
+.modal .collection-buttons {
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -105,8 +106,10 @@
   border-radius: 10px;
 }
 
-.modal .lineTable {
-  background-color:aquamarine;
+.lineTable {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  color: black;
 }
 
 :root {
@@ -114,6 +117,10 @@
   --tooltip-background-color: black;
   --tooltip-margin: 30px;
   --tooltip-arrow-size: 6px;
+}
+
+.cabecalho:hover {
+  cursor: pointer;
 }
 
 /* Wrapping */
@@ -177,7 +184,7 @@
 }
 
 .buttonScheduled:hover,
-.close-button:hover{
+.close-button:hover {
   border: 1px solid #6a1b9a;
   border-radius: 10px;
   padding: 5px;
@@ -217,6 +224,26 @@
   margin: 50px auto;
 }
 
+.nameOfPerson {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 30px;
+  font-weight: bold;
+  color: black;
+  margin: 15px 10px 0px 10px;
+}
+
+.buttonModalNoInfo {
+  border: none;
+  background: transparent;
+  padding: 8px;
+  cursor: pointer;
+  color: #6a1b9a;
+  font-size: 24px;
+  font-weight: 700;
+  z-index: 3;
+  margin: 15px 10px 0px 10px;
+}
+
 @keyframes loader {
   0% {
     top: 78px;
@@ -239,7 +266,8 @@ table {
   position: relative;
   border-collapse: collapse;
 }
- th{
+
+th {
   position: sticky;
   top: 0;
- }
+}

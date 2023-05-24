@@ -36,7 +36,6 @@ const RegisterPage = () => {
         setIsOpenErrorMessage(false)
       }, 7000)
     }
-
   }
 
   return (
@@ -125,7 +124,10 @@ const RegisterPage = () => {
           <div className="modal">
             <main className="modal__main">
               <h1>Opa!!!</h1>
-              <p>Cadastro não realizado com sucesso!! Verifique se preencheu todos os dados da forma correta</p>
+              <p>
+                Cadastro não realizado com sucesso!! Verifique se preencheu todos os dados da forma
+                correta
+              </p>
             </main>
           </div>
         </>

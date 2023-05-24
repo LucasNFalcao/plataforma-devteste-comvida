@@ -1,9 +1,11 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable no-lone-blocks */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
+// import { useNavigate } from 'react-router-dom'
 import { FaFlag } from 'react-icons/fa'
 import Tooltip from '../tooltip/index.jsx'
+import UserInfo from '../../pages/UserInfoQuest/index.jsx'
 
 import { AuthContext } from '../../contexts/auth'
 
@@ -11,69 +13,145 @@ import './styles.css'
 
 const TableInfo = () => {
   const {
-    user,
     tutors,
-    children_teenagers,
-    getResults,
+    childrenTeen,
+    finishedChildren,
+    finishedTutors,
+    quantityChildren,
+    quantityTutors,
     getQuestionario,
-    results,
+    setFinishedChildren,
+    setFinishedTutors,
+    setLoading,
+    setTutorsFiltered,
+    setChildrenTeenFiltered,
+    getResults,
     loading,
+    isOpenQuestionaryModal,
+    setIsOpenQuestionaryModal,
+    exams,
+    getExams,
   } = useContext(AuthContext)
-  const navigate = useNavigate()
 
-  const [participants, setParticipants] = useState([])
-  const [listOfResults, setListOfResults] = useState({})
-  const [isOpenScheduledModal, setIsOpenScheduledModal] = useState(false)
-  const [isOpenThankfulModal, setIsOpenThankfulModal] = useState(false)
+  const [listOfResults, setListOfResults] = useState([])
+  const [lengthListOfResults, setLengthListOfResults] = useState([])
+  const [percentagensQuestionary, setPercentagensQuestionary] = useState([])
+  const [isLoadingQuestionaryPerson, setIsLoadingQuestionaryPerson] = useState(false)
   const [loadingAnswer, setLoadingAnswer] = useState(loading)
   const [personChoosed, setPersonChoosed] = useState(0)
 
-  useEffect(async () => {
-    await getResults()
-    setParticipants(results)
-  }, [])
-
-  useEffect(async () => {
-    if (personChoosed !== 0) {
-      setListOfResults(await getQuestionario(personChoosed))
-      setLoadingAnswer(false)
+  useEffect(() => {
+    if (quantityTutors) {
+      const getTutors = async () => await setTutorsFiltered()
+      getTutors()
     }
+    if (quantityChildren) {
+      const getChildren = async () => await setChildrenTeenFiltered()
+      getChildren()
+    }
+  }, [quantityChildren, quantityTutors])
 
-  }, [isOpenThankfulModal, personChoosed])
+  useEffect(() => {
+    if (finishedChildren && finishedTutors) {
+      tutors.forEach((tutor) => {
+        childrenTeen.forEach((child) => {
+          if (
+            child.user === tutor.tutor.user &&
+            (child.user !== null || tutor.tutor.user !== null)
+          ) {
+            tutor.children.push(child)
+          }
+        })
+      })
+      console.log('Tutors', tutors)
+      console.log('Children', childrenTeen)
+      const allExams = async () => await getExams()
+      allExams()
+      setFinishedChildren(false)
+      setFinishedTutors(false)
+      setLoading(false)
+    }
+  }, [childrenTeen, finishedChildren, finishedTutors, tutors])
+
+  useEffect(() => {
+    let resultsFromTutor = {}
+    tutors.forEach(async (objeto) => {
+      resultsFromTutor = await getResults(objeto?.tutor.user)
+      objeto.resultsQuestion = resultsFromTutor
+    })
+  }, [tutors])
+
+  useEffect(() => {
+    if (personChoosed) {
+      setIsLoadingQuestionaryPerson(true)
+      const resultsFromApi = resultsResponse()
+      const answersPerson = resultsFromApi?.map((object) => {
+        let count = 0
+        if (object.child?.id === personChoosed.id) {
+          count = object.id
+        } else if (
+          object?.exam.id === (9 || 12 || 20 || 24) &&
+          personChoosed.nameChild === 'Familia'
+        ) {
+          count = object.id
+        }
+        return count
+      })
+      setLengthListOfResults(answersPerson)
+      updateTheUserInfo(answersPerson)
+    }
+  }, [personChoosed])
 
   useEffect(() => {
     setLoadingAnswer(loading)
   }, [loading])
 
-  const handleFindTheRelation = () => {
-    const listOfPeople = []
-    const tutorsWithoutTutored = []
-    let tutored
-    let lineOfTable
-    tutors?.map((tutor) => {
-      if (tutor.child_teen.length) {
-        for (let count = 0; count < tutor.child_teen.length; count++) {
-          tutored = handleReturnTutored(tutor.child_teen[count])
-          lineOfTable = {
-            name: tutored?.name,
-            age_range: tutored?.age_range,
-            tutor: tutor?.name,
-            questionnaires: tutored?.questionnaires,
-            appointment_scheduled: tutored?.appointment_scheduled,
-          }
-          listOfPeople.push(lineOfTable)
-        }
-      } else {
-        tutorsWithoutTutored.push(tutor?.name)
-      }
-
-      return tutor
-    })
-    // setListOfParticipants({ listOfPeople, tutorsWithoutTutored })
+  const gettingAllAnswers = async (values) => {
+    const allValues = Promise.all(
+      values.map(async (number) => {
+        const returnResponseRe = await getQuestionario(number)
+        console.log('This is the FOR EACH: ', returnResponseRe)
+        return returnResponseRe
+      })
+    )
+    return allValues
   }
 
-  const handleReturnTutored = (valueId) => {
-    return children_teenagers.find((element) => element.id === valueId)
+  const updateTheUserInfo = async (arrayReference) => {
+    if (personChoosed) {
+      let answers = []
+      console.log('This is the lenght lenght list of results: ', arrayReference)
+      if (arrayReference.length !== 0) {
+        const values = arrayReference.filter((number) => number !== 0)
+        console.log('VALUES =========>: ', values)
+        const allResults = await gettingAllAnswers(values)
+
+        console.log('TESTESTETSTES: ', allResults)
+        answers = allResults
+      }
+
+      console.log('This is the list od results on table info: ', listOfResults)
+      console.log('This is ANSWERS on table info: ', answers)
+      setTimeout(() => {
+        setIsLoadingQuestionaryPerson(false)
+        setIsOpenQuestionaryModal(true)
+      }, 4000)
+      setListOfResults(answers)
+      if (answers.length !== 0) {
+        localStorage.setItem('person', JSON.stringify(personChoosed))
+        localStorage.setItem('questionaries', JSON.stringify(answers))
+
+        window.open('/user-info-questionary')
+        setPersonChoosed(0)
+      }
+    }
+  }
+
+  const resultsResponse = () => {
+    const responseResults = tutors.find((element) => personChoosed.idUser === element.tutor.user)
+    // console.log('This is: ', await getResults(personChoosed.idUser))
+    console.log('response response: ', responseResults)
+    return responseResults.resultsQuestion
   }
 
   const handleCountAnwsers = (questionnaires) => {
@@ -107,99 +185,134 @@ const TableInfo = () => {
     )
   }
 
+  const handleAgeRange = (ageRange) => {
+    switch (ageRange) {
+      case 'six_to_twelve':
+      case 'children':
+        return 'Criança'
+      case 'teenagers':
+        return 'Adolescente'
+      default:
+        return 'Familia'
+    }
+  }
+
   const handleCreateHeaderTable = () => {
-    return isOpenThankfulModal ? (
-      <tr>
-        <th key={'perguntaQuest'}>Pergunta do Questionario</th>
-        <th key={'respostaQuest'}>Resposta da Pergunta</th>
-        <th key={'botaoVoltarTabela'}>Botão para voltar a tabela </th>
-      </tr>
-    ) : (
-      <tr>
-        <th key={'idUser'}>id User</th>
-        <th key={'nome'}>Nome</th>
-        <th key={'idTutor'}>id Tutor</th>
-        <th key={'crianca'}>Nome da Criança/Adolescente</th>
-        <th key={'idCrianca'}>id Criança/Adolescente</th>
-        <th key={'faixaEtaria'}>Faixa Etaria</th>
-        <th key={'idQuestionario'}>id do Questionario</th>
-        <th key={'respostasQuest'}>Respostas do Questionario</th>
-      </tr>
-    )
-  }
-
-  const handleOpenScheduled = (event, person) => {
-    console.log(event)
-    setIsOpenScheduledModal(true)
-    setPersonChoosed({ name: person })
-  }
-
-  const handleButtonScheduled = (person) => {
     return (
-      <button className="buttonScheduled" onClick={(event) => handleOpenScheduled(event, person)}>
-        Consulta médica
-      </button>
+      <>
+        <tr>
+          <th key={'nome'} className="cabecalho">
+            Nome do Tutor
+          </th>
+          <th key={'crianca'} className="cabecalho">
+            Nome da Criança/Adolescente
+          </th>
+          <th key={'faixaEtaria'}>Faixa Etaria</th>
+          <th key={'questComplete'}>Porcentagem de Respostas</th>
+          <th key={'respostasQuest'}>Respostas do Questionario</th>
+        </tr>
+      </>
     )
   }
-  // const handleAnswers = () => {
-  //     <>
-  //       <div className="overlay" />
-  //       <div className="modal">
-  //         <main className="modal__main">
 
-  //         </main>
-  //         <button
-  //           onClick={() => {
-  //             setIsOpenThankfulModal(false)
-  //             setPersonChoosed(0)
-  //             setLoadingAnswer(true)
-  //           }}
-  //           className="close-button"
-  //         >
-  //           Fechar
-  //         </button>
-  //       </div>
-  //     </>
-  // }
+  const handlePercentage = (resultsFromTutor, childAgeRange, idChild) => {
+    // console.log('Results =========>', resultsFromTutor)
+    if (childAgeRange === 'children' || childAgeRange === 'six_to_twelve') {
+      const values = []
+      resultsFromTutor?.map((result) => {
+        if (idChild === result?.child?.id) {
+          if (!values.includes(result?.exam.id)) {
+            values.push(result?.exam.id)
+          }
+        }
+      })
+      let counter = 0
+      if (values.includes(14)) {
+        counter += 1
+      }
+      if (values.includes(15)) {
+        counter += 1
+      }
+      if (values.includes(17)) {
+        counter += 1
+      }
+      return `${((counter / 3) * 100).toFixed(2)}%`
+    } else if (childAgeRange === 'teenagers') {
+      const values = []
+      resultsFromTutor?.map((result) => {
+        if (idChild === result?.child?.id) {
+          if (!values.includes(result?.exam.id)) {
+            values.push(result?.exam.id)
+          }
+        }
+      })
+      let counter = 0
+      if (values.includes(18)) {
+        counter += 1
+      }
+      if (values.includes(16)) {
+        counter += 1
+      }
+      if (values.includes(19)) {
+        counter += 1
+      }
+      if (values.includes(22)) {
+        counter += 1
+      }
+      if (values.includes(21)) {
+        counter += 1
+      }
+      return `${((counter / 5) * 100).toFixed(2)}%`
+    } else {
+      const values = []
+      resultsFromTutor?.map((result) => {
+        if (!values.includes(result?.exam.id)) {
+          values.push(result?.exam.id)
+        }
+      })
+      let counter = 0
+      if (values.includes(9)) {
+        counter += 1
+      }
+      if (values.includes(12)) {
+        counter += 1
+      }
+      if (values.includes(20)) {
+        counter += 1
+      }
+      if (values.includes(24)) {
+        counter += 1
+      }
+      return `${((counter / 4) * 100).toFixed(2)}%`
+    }
+  }
 
   const handleCreateTheTable = () => {
-    return isOpenThankfulModal ?
-      listOfResults?.map((objeto) => {
+    return tutors.map((objeto) => {
+      return objeto.children.map((child) => {
         return (
-          <tr key={objeto?.id} className="lineTable">
-            <td>{objeto?.question?.title}</td>
-            <td>{objeto?.answer?.title}</td>
-            <td>
-              <button
-                onClick={() => {
-                  setIsOpenThankfulModal(false)
-                  setPersonChoosed(0)
-                }}
-                className="close-button"
-              >
-                Voltar na tabela
-              </button>
+          <tr key={`${objeto.tutor.id}${child?.id}`}>
+            <td class="lineTable">
+              <Tooltip content={`Telefone: ${objeto.tutor?.phone}`} direction="right">
+                {objeto.tutor.name}
+              </Tooltip>
             </td>
-          </tr>
-        )})
-     : results?.map((listaObjetos) => {
-      return listaObjetos?.map((objeto) => {
-        console.log('Lista de objetos', listaObjetos)
-        return (
-          <tr key={objeto?.id} className="lineTable">
-            <td>{objeto.tutor?.user}</td>
-            <td>{objeto.tutor?.name}</td>
-            <td>{objeto.tutor?.id}</td>
-            <td>{objeto.child?.name}</td>
-            <td>{objeto.child?.id}</td>
-            <td>{objeto.child?.age_range}</td>
-            <td>{objeto.exam?.id}</td>
-            <td>
+            <td class="lineTable">{child.name}</td>
+            <td class="lineTable">{handleAgeRange(child?.age_range)}</td>
+            <td class="lineTable">
+              {handlePercentage(objeto?.resultsQuestion, child?.age_range, child?.id)}
+            </td>
+            <td class="lineTable">
               <button
-                onClick={() => {
-                  setIsOpenThankfulModal(true)
-                  setPersonChoosed(objeto.id)
-                  setLoadingAnswer(true)
+                id={`${child?.id}`}
+                onClick={(event) => {
+                  setPersonChoosed({
+                    nameChild: child.name,
+                    nameTutor: objeto.tutor.name,
+                    idUser: objeto.tutor.user,
+                    id: child?.id,
+                  })
+                  console.log('event', event)
                 }}
                 className="close-button"
               >
@@ -212,19 +325,64 @@ const TableInfo = () => {
     })
   }
 
-  const handleSubmitScheduled = (event) => {
-    event.preventDefault()
-    const date = event.target[0].value
-    const hour = event.target[1].value
-    const observation = event.target[2].value
-    setPersonChoosed({ scheduled: date && hour, date: date, hour: date, observation: observation })
-    setIsOpenScheduledModal(false)
-    setIsOpenThankfulModal(true)
-    setTimeout(() => {
-      setIsOpenThankfulModal(false)
-    }, 3000)
-  }
+  // const handleQuantityQuestion = async (idExam) => {
+  //   let value = await getQuestionario(idExam)
+  //   console.log('This is handleQuantity')
+  //   const valueFinded = exams.find(exam => exam.numberId === value?.exam?.id)
+  //   return `${value?.result_answers?.length}/${valueFinded.sizeQuestions}`
+  // }
 
+  // const sortTable = (n) => {
+  //   console.log('sortTable sortTable')
+  //   setIsOpenLoadingOrderModal(true)
+  //   var table,
+  //     rows,
+  //     switching,
+  //     i,
+  //     x,
+  //     y,
+  //     shouldSwitch,
+  //     dir,
+  //     switchcount = 0
+  //   table = document.getElementById('child_teen')
+  //   switching = true
+  //   dir = 'asc'
+  //   while (switching) {
+  //     switching = false
+  //     rows = table.getElementsByTagName('TR')
+  //     for (i = 1; i < rows.length - 1; i++) {
+  //       shouldSwitch = false
+  //       x = rows[i].getElementsByTagName('TD')[n]
+  //       y = rows[i + 1].getElementsByTagName('TD')[n]
+  //       let cmpX = isNaN(parseInt(x.innerHTML)) ? x.innerHTML.toLowerCase() : parseInt(x.innerHTML)
+  //       let cmpY = isNaN(parseInt(y.innerHTML)) ? y.innerHTML.toLowerCase() : parseInt(y.innerHTML)
+  //       if (dir === 'asc') {
+  //         if (cmpX > cmpY) {
+  //           shouldSwitch = true
+  //           break
+  //         }
+  //       } else if (dir === 'desc') {
+  //         if (cmpX < cmpY) {
+  //           shouldSwitch = true
+  //           break
+  //         }
+  //       }
+  //     }
+  //     if (shouldSwitch) {
+  //       rows[i].parentNode.insertBefore(rows[i + 1], rows[i])
+  //       switching = true
+  //       switchcount++
+  //     } else {
+  //       if (switchcount === 0 && dir === 'asc') {
+  //         dir = 'desc'
+  //         switching = true
+  //       }
+  //     }
+  //   }
+  //   setIsOpenLoadingOrderModal(false)
+  // }
+
+  console.log('This is the person: ', personChoosed)
   return (
     <div id="main_container">
       <table id="child_teen">
@@ -232,7 +390,7 @@ const TableInfo = () => {
         <tbody>
           {loadingAnswer ? (
             <div class="loader-container">
-              <span>We're preparing your data</span>
+              <span>Carregando os dados...</span>
               <div class="loader">
                 <div></div>
                 <div></div>
@@ -243,76 +401,23 @@ const TableInfo = () => {
           )}
         </tbody>
       </table>
-      {/* isOpenScheduledModal && (
+      {isOpenQuestionaryModal && listOfResults.length !== 0 && <UserInfo />}
+      {isOpenQuestionaryModal && listOfResults.length === 0 && (
         <>
-          <div className="overlay" />
-          <div className="modal">
-            <main className="modal__main">
-              <form onSubmit={handleSubmitScheduled}>
-                <div className="labels">
-                  <label className="input">Consulta Marcada:</label>
-                  <span className="input"> {personChoosed?.scheduled ? 'Sim' : 'Não'}</span>
-                </div>
-                <br />
-                <div className="labels">
-                  <label className="input">Data:</label>
-                  <input
-                    type="date"
-                    id="date"
-                    name="date"
-                    style={{ height: '35px' }}
-                    defaultValue={personChoosed?.date}
-                    required
-                  />
-                </div>
-                <br />
-                <div className="labels">
-                  <label className="input">Horário:</label>
-                  <input
-                    type="time"
-                    id="hour"
-                    name="appt"
-                    min="08:00"
-                    max="19:00"
-                    style={{ height: '35px' }}
-                    defaultValue={personChoosed?.date}
-                    required
-                  />
-                </div>
-                <br />
-                <div className="labels observation">
-                  <label className="input">Observação:</label>
-                  <textarea
-                    id="observation"
-                    name="observation"
-                    rows="7"
-                    cols="55"
-                    defaultValue={personChoosed?.observation}
-                  />
-                </div>
-                <br />
-                <div className="collection-buttons">
-                  <input type="submit" value="Submit" className="submit-button" />
-                  <button onClick={() => setIsOpenScheduledModal(false)} className="close-button">
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            </main>
+          <div class="overlay" />
+          <div class="modalTableInfo">
+            <h1 className="nameOfPerson">
+              {personChoosed?.nameChild === 'Familia'
+                ? `${personChoosed?.nameTutor}`
+                : `${personChoosed?.nameChild}`}{' '}
+              não tem registro de nenhuma resposta de qualquer questionário
+            </h1>
+            <button className="buttonModalNoInfo" onClick={() => setIsOpenQuestionaryModal(false)}>
+              Fechar
+            </button>
           </div>
         </>
-      )} */}
-      {/* {isOpenThankfulModal && (
-        <>
-          <div className="overlay" />
-          <div className="modal">
-            <main className="modal__main">
-              <h1>Obrigado!!</h1>
-              <p>Consulta Registrada</p>
-            </main>
-          </div>
-        </>
-      )} */}
+      )}
     </div>
   )
 }

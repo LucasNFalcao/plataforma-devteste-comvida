@@ -14,12 +14,12 @@ const Header = () => {
 
   const handleLogout = () => {
     logout()
+    navigate('/login')
   }
 
   const handleClickHomePage = () => {
     navigate('/')
   }
-
 
   return (
     <div id="container-header">

@@ -4,9 +4,8 @@ import { useNavigate } from 'react-router-dom'
 import InputMask from 'react-input-mask'
 
 import { AuthContext } from '../../contexts/auth'
-import { Link} from 'react-router-dom'
 
-import "./styles.css"
+import './styles.css'
 
 let imagem_projetocomvida = require('../../assets/comvida-pessoa.png')
 
@@ -14,14 +13,12 @@ const LoginPage = () => {
   const { login } = useContext(AuthContext)
   const navigate = useNavigate()
 
-  const [cpf, setCpf] = useState("")
-  const [password, setPassword] = useState("")
+  const [cpf, setCpf] = useState('')
+  const [password, setPassword] = useState('')
   const [isOpenErrorMessage, setIsOpenErrorMessage] = useState(false)
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    console.log('This is cpf', cpf)
-    console.log('This is password', password)
 
     let confirmLogin = await login(cpf, password)
     if (confirmLogin) {
@@ -37,7 +34,7 @@ const LoginPage = () => {
   return (
     <div id="login">
       <h1 className="title">Login do Sistema</h1>
-      <h1 className="subtitle">Projeto Com Vida</h1>
+      <h1 className="subtitle">Projeto ComVida</h1>
       <form className="form" onSubmit={handleSubmit}>
         <img src={imagem_projetocomvida} />
         <div className="field">
@@ -58,12 +55,12 @@ const LoginPage = () => {
             onChange={(event) => setPassword(event.target.value)}
           />
         </div>
-        <div className="register">
+        {/* <div className="register">
           Ainda não é cadastrado?{' '}
           <Link to="/register" style={{ color: 'white' }}>
             Me cadastrar
           </Link>
-        </div>
+        </div> */}
         <div className="actions">
           <button className="button-submit" type="submit">
             Entrar
@@ -72,13 +69,11 @@ const LoginPage = () => {
       </form>
       {isOpenErrorMessage && (
         <>
-          <div className="overlay" />
-          <div className="modal">
-            <main className="modal__main">
+          <div class="overlay" />
+          <div class="modal">
+            <main id="modal__main">
               <h1>Login invalido</h1>
-              <p>
-                Confira se você digitou o CPF e a senha certos
-              </p>
+              <p>Confira se você digitou o CPF e a senha certos</p>
             </main>
           </div>
         </>
