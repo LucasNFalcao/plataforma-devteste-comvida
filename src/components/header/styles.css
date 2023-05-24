@@ -1,0 +1,48 @@
+#container-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 2px solid #000;
+  background-color: #6a1b9a;
+}
+
+#container-header .logo-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 15px;
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+  text-align: right;
+}
+
+#container-header .header-button {
+  color: white;
+  background-color: transparent;
+  border: 0;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 15px;
+}
+
+#container-header .header-button:hover,
+#container-header .logo-title:hover {
+  color: #6a1b9a;
+  background-color: white;
+  border: 1px solid #6a1b9a;
+  border-radius: 5px;
+}
+
+#container-header .logo-photo {
+  background-color: white;
+  border-radius: 25px;
+  border: 0;
+  margin-right: 10px;
+}

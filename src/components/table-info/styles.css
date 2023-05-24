@@ -1,0 +1,245 @@
+#main_container{
+  padding: 20px;
+}
+
+#child_teen {
+  margin-top: 20px;
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#child_teen td,
+#child_teen th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#child_teen tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+#child_teen tr:hover {
+  background-color: #ddd;
+}
+
+#child_teen th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  background-color: #6a1b9a;
+  color: white;
+}
+
+.overlay {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, .7);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}
+
+.modal {
+  position: fixed;
+  z-index: 20;
+  background: #fff;
+  width: 550px;
+  height: fit-content;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  border: 10px solid #6a1b9a;
+  border-radius: 70px;
+}
+
+.modal .modal__main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 35px;
+}
+
+.modal .labels{
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.modal .observation{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.modal .input {
+  margin-right: 15px;
+  font-size: 35px;
+  font-weight: 600;
+}
+
+.modal .collection-buttons{
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: 35px;
+}
+
+.close-button,
+.modal .submit-button {
+  border: none;
+  background: transparent;
+  padding: 5px;
+  cursor: pointer;
+  color: #6a1b9a;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.modal .submit-button {
+  background: #6a1b9a;
+  color: #fff;
+  border-radius: 10px;
+}
+
+.modal .lineTable {
+  background-color:aquamarine;
+}
+
+:root {
+  --tooltip-text-color: white;
+  --tooltip-background-color: black;
+  --tooltip-margin: 30px;
+  --tooltip-arrow-size: 6px;
+}
+
+/* Wrapping */
+.Tooltip-Wrapper {
+  display: inline-block;
+  position: relative;
+}
+
+/* Absolute positioning */
+.Tooltip-Tip {
+  position: absolute;
+  border-radius: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px;
+  color: var(--tooltip-text-color);
+  background: var(--tooltip-background-color);
+  font-size: 14px;
+  font-family: sans-serif;
+  line-height: 1;
+  z-index: 100;
+  white-space: nowrap;
+}
+
+/* CSS border triangles */
+.Tooltip-Tip::before {
+  content: " ";
+  left: 50%;
+  border: solid transparent;
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+  border-width: var(--tooltip-arrow-size);
+  margin-left: calc(var(--tooltip-arrow-size) * -1);
+}
+
+/* Absolute positioning */
+.Tooltip-Tip.right {
+  left: calc(100% + var(--tooltip-margin));
+  top: 50%;
+  transform: translateX(0) translateY(-50%);
+}
+
+/* CSS border triangles */
+.Tooltip-Tip.right::before {
+  left: calc(var(--tooltip-arrow-size) * -1);
+  top: 50%;
+  transform: translateX(0) translateY(-50%);
+  border-right-color: var(--tooltip-background-color);
+}
+
+.buttonScheduled {
+  color: #6a1b9a;
+  background-color: transparent;
+  border: 0;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.buttonScheduled:hover,
+.close-button:hover{
+  border: 1px solid #6a1b9a;
+  border-radius: 10px;
+  padding: 5px;
+}
+
+.loader {
+  display: inline-block;
+  position: relative;
+  width: 128px;
+  height: 128px;
+}
+
+.loader div {
+  position: absolute;
+  border: 5px solid #333;
+  opacity: 1;
+  border-radius: 50%;
+  animation: loader 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+
+}
+
+.loader div:nth-child(2) {
+  animation-delay: -0.5s;
+}
+
+.loader-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  width: 200%;
+}
+
+.loader-container span {
+  color: #333;
+  font-size: 50px;
+  margin: 50px auto;
+}
+
+@keyframes loader {
+  0% {
+    top: 78px;
+    left: 78px;
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+
+  100% {
+    top: -1px;
+    left: -1px;
+    width: 120px;
+    height: 120px;
+    opacity: 0;
+  }
+}
+
+table {
+  position: relative;
+  border-collapse: collapse;
+}
+ th{
+  position: sticky;
+  top: 0;
+ }

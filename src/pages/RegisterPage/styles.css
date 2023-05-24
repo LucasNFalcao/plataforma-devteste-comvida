@@ -1,0 +1,104 @@
+#login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 0 2rem;
+  background-color: #6a1b9a;
+}
+
+#login .title {
+  color: #fff;
+  font-size: 40px;
+  margin: 20px auto 5px;
+}
+
+#login .subtitle {
+  color: #fff;
+  font-size: 25px;
+  margin: 10px auto 5px;
+}
+
+#login .form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #6a1b9a;
+  width: 100%;
+  max-width: 480px;
+  padding: 0.5rem;
+}
+
+#login .field {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 0.5rem;
+  justify-content: center;
+  align-items: center;
+  width: 250px;
+}
+
+#login .field label {
+  display: block;
+  color: #fff;
+  font-size: 24px;
+  margin: 20px auto 5px;
+}
+
+#login .field input {
+  width: 100%;
+  height: 35px;
+  border-radius: 5px;
+}
+
+#login .actions {
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+#login .button-submit {
+  color: #6a1b9a;
+  background-color: #fff;
+  border: 0;
+  outline: 0;
+  padding: 20px 40px;
+  margin: 20px 0;
+  font-size: 28px;
+  text-decoration: none;
+  text-align: center;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.overlay {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, .7);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}
+
+.modal {
+  position: fixed;
+  z-index: 20;
+  background: #fff;
+  width: 550px;
+  height: fit-content;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  border: 10px solid #6a1b9a;
+  border-radius: 70px;
+}
+
+.modal .modal__main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 35px;
+}
