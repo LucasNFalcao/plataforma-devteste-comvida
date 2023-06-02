@@ -23,18 +23,22 @@ const RegisterPage = () => {
 
   const handleOnClick = async (event) => {
     event.preventDefault()
-    const result = await registerSearcher(name, email, cpf, institution, role)
-    if (result) {
-      setIsOpenThankfulModal(true)
-      setTimeout(() => {
-        setIsOpenThankfulModal(false)
-        navigate('/login')
-      }, 7000)
-    } else {
-      setIsOpenErrorMessage(true)
-      setTimeout(() => {
-        setIsOpenErrorMessage(false)
-      }, 7000)
+    setCpf((prevState) => prevState.replace(/[^0-9]/g, ''))
+    if (cpf.length === 11) {
+      const result = await registerSearcher(name, email, cpf, institution, role)
+      if (result) {
+        setIsOpenThankfulModal(true)
+        setTimeout(() => {
+          setIsOpenThankfulModal(false)
+          navigate('/login')
+        }, 8000)
+
+      } else {
+        setIsOpenErrorMessage(true)
+        setTimeout(() => {
+          setIsOpenErrorMessage(false)
+        }, 7000)
+      }
     }
   }
 
@@ -72,7 +76,7 @@ const RegisterPage = () => {
           <InputMask
             mask="999.999.999-99"
             value={cpf}
-            onChange={(event) => setCpf(event.target.value)}
+            onChange={(event) => setCpf(event.target.value.replace(/[^0-9]/g, ''))}
             required
           />
         </div>
@@ -111,8 +115,8 @@ const RegisterPage = () => {
               <h1>Obrigado!!</h1>
               <p>Cadastro feito com sucesso!!</p>
               <p>
-                Em seu primeiro acesso, a senha é o seu CPF. Caso queira altera é só clicar na opção
-                "Mudar Senha" no menu
+                Para acessar, a senha é o seu CPF. Caso queira altera é só clicar na opção "Mudar
+                Senha" no menu. Você será redirecionado para a página de Login.
               </p>
             </main>
           </div>

@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/alt-text */
 import React, { useState, useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import InputMask from 'react-input-mask'
 
 import { AuthContext } from '../../contexts/auth'
@@ -55,12 +55,12 @@ const LoginPage = () => {
             onChange={(event) => setPassword(event.target.value)}
           />
         </div>
-        {/* <div className="register">
+        <div className="register">
           Ainda não é cadastrado?{' '}
           <Link to="/register" style={{ color: 'white' }}>
             Me cadastrar
           </Link>
-        </div> */}
+        </div>
         <div className="actions">
           <button className="button-submit" type="submit">
             Entrar
